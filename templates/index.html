@@ -1,0 +1,112 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="mb-3">SMTP Web UI (Locaweb / Genérico)</h1>
+  <p class="text-muted">Envie e-mails via SMTP com suporte a SSL/STARTTLS, HTML e anexos.</p>
+
+  <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Host SMTP</label>
+        <input type="text" class="form-control" name="smtp_host" value="smtplw.com.br" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Porta</label>
+        <input type="number" class="form-control" name="smtp_port" value="465" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label d-block">Segurança</label>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="security" id="sec_ssl" value="ssl" checked>
+          <label class="form-check-label" for="sec_ssl">SSL (465)</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="security" id="sec_starttls" value="starttls">
+          <label class="form-check-label" for="sec_starttls">STARTTLS (587)</label>
+        </div>
+        <div class="form-check form-check-inline ms-3">
+          <input class="form-check-input" type="checkbox" name="fallback" id="fallback">
+          <label class="form-check-label" for="fallback">Fallback automático 465→587</label>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Usuário</label>
+        <input type="text" class="form-control" name="username" value="" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Senha</label>
+        <input type="password" class="form-control" name="password" placeholder="Senha do serviço SMTP" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Debug SMTP</label>
+        <select class="form-select" name="debug">
+          <option value="on" selected>Ligado</option>
+          <option value="off">Desligado</option>
+        </select>
+      </div>
+
+      <hr class="my-3">
+
+      <div class="col-md-6">
+        <label class="form-label">Remetente (From)</label>
+        <input type="email" class="form-control" name="sender" value="faturamento@rvasecurity.com.br" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Responder para (Reply-To) (opcional)</label>
+        <input type="email" class="form-control" name="reply_to" placeholder="opcional">
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label">Para (To)</label>
+        <input type="text" class="form-control" name="to" placeholder="ex.: a@ex.com, b@ex.com" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Cópia (Cc) (opcional)</label>
+        <input type="text" class="form-control" name="cc" placeholder="separar por vírgula/;">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Cópia oculta (Bcc) (opcional)</label>
+        <input type="text" class="form-control" name="bcc" placeholder="separar por vírgula/;">
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label">Assunto</label>
+        <input type="text" class="form-control" name="subject" value="Teste SMTP Locaweb via Web UI" required>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Corpo em texto (plain)</label>
+        <textarea class="form-control" name="text_body" rows="6">Olá! Este é um teste via SMTP Locaweb.</textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Corpo em HTML (opcional)</label>
+        <textarea class="form-control" name="html_body" rows="6"><h3>Teste SMTP</h3><p>Mensagem de teste via <b>Web UI</b>.</p></textarea>
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label">Anexos (múltiplos)</label>
+        <input type="file" class="form-control" name="attachments" multiple>
+        <div class="form-text">Limite ~25MB por requisição (o servidor pode impor limites menores).</div>
+      </div>
+
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary btn-lg mt-3">Enviar</button>
+      </div>
+    </div>
+  </form>
+
+  {% if result %}
+  <hr class="my-4">
+  <div class="mt-3">
+    <h5>Resultado do envio</h5>
+    <div class="alert {{ 'alert-success' if result.ok else 'alert-danger' }}" role="alert">
+      {{ result.message }}
+    </div>
+    <label class="form-label">Logs SMTP</label>
+    <textarea class="form-control" rows="12" readonly>{{ result.logs }}</textarea>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
